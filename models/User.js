@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
         name: String,
         ticker: String,
         price: Number,
-        description: String,
         quantity: { type: Number, default: 0 }, // 주식 수량 추가
         logo: String, // 기업 로고 이미지 URL 추가
         listingDate: { type: Date } // 상장 예정일 추가

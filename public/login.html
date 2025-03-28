@@ -13,7 +13,6 @@
         <input type="password" id="password" placeholder="비밀번호" required /><br />
         <button type="submit">로그인</button>
     </form>
-    <p>계정이 없으신가요? <a href="register.html">회원가입</a></p>
 
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(event) {
@@ -21,6 +20,8 @@
 
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+
+            console.log('📤 로그인 요청 데이터:', { email, password }); // 콘솔에서 확인
 
             const response = await fetch('http://localhost:3000/auth/login', {
                 method: 'POST',
@@ -30,11 +31,14 @@
 
             const data = await response.json();
 
+            console.log('📥 로그인 응답 데이터:', data); // 서버 응답 확인
+
             if (response.ok) {
-                localStorage.setItem('token', data.token);  // 토큰을 로컬 스토리지에 저장
-                window.location.href = 'index.html';  // 로그인 후 메인 페이지로 이동
+                localStorage.setItem('token', data.token);
+                alert('로그인 성공!');
+                window.location.href = 'index.html';
             } else {
-                alert(data.message); // 오류 메시지 표시
+                alert(data.message);
             }
         });
     </script>

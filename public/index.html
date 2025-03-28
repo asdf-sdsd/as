@@ -38,7 +38,6 @@
             gap: 20px;
             margin-top: 20px;
             justify-content: center;
-            min-height: 400px;
         }
 
         .stock-card {
@@ -142,15 +141,6 @@
             width: 100%;
         }
 
-        /* 로딩 인디케이터 스타일 */
-        #loading {
-            display: none;
-            text-align: center;
-            font-size: 18px;
-            color: #007bff;
-            margin-top: 20px;
-        }
-
     </style>
 </head>
 <body>
@@ -167,9 +157,6 @@
 </div>
 
 <h2 id="greeting"></h2>
-
-<!-- 로딩 인디케이터 -->
-<div id="loading">주식 정보를 불러오는 중...</div>
 
 <div id="stocks"></div>
 
@@ -207,7 +194,7 @@
         const tokenParts = token.split('.');
         if (tokenParts.length === 3) {
             const payload = tokenParts[1];
-            const decodedPayload = JSON.parse(base64UrlDecode(payload));
+            const decodedPayload = JSON.parse(base64UrlDecode(payload)); // base64UrlDecode 확인 필요
 
             document.getElementById('greeting').textContent = `환영합니다, ${decodedPayload.username}님!`;
             
@@ -215,9 +202,6 @@
             document.getElementById('logout').style.display = 'block';
             document.getElementById('login').style.display = 'none';
             document.getElementById('register').style.display = 'none';
-
-            // 로딩 인디케이터 표시
-            document.getElementById('loading').style.display = 'block';
 
             fetch('http://localhost:3000/api/user/stocks', {
                 headers: { 'Authorization': `Bearer ${token}` }
@@ -230,7 +214,6 @@
                 console.log('📌 받은 데이터:', data);
 
                 const stocksDiv = document.getElementById('stocks');
-                document.getElementById('loading').style.display = 'none';  // 로딩 인디케이터 숨기기
 
                 if (!data.stocks || data.stocks.length === 0) {
                     stocksDiv.innerText = '보유한 주식이 없습니다.';
@@ -256,7 +239,6 @@
             .catch(error => {
                 console.error('❌ 주식 정보 로드 실패:', error);
                 document.getElementById('stocks').innerText = '주식 정보를 불러오는 데 실패했습니다.';
-                document.getElementById('loading').style.display = 'none';  // 로딩 인디케이터 숨기기
             });
         } else {
             console.error("잘못된 JWT 토큰 형식");
