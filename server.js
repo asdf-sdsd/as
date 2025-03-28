@@ -13,6 +13,9 @@ const app = express();
 app.use(cors());
 app.use(express.json()); // JSON 요청 처리
 
+// 정적 파일 제공 (프론트엔드 HTML, CSS, JS)
+app.use(express.static("public"));
+
 // MongoDB 연결
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
@@ -26,9 +29,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/stocks", stockRoutes);
 app.use("/api/user", userRoutes);
 
-// 기본 루트 응답
+// 기본 루트 요청 → index.html 제공
 app.get("/", (req, res) => {
-  res.send("Express 서버가 정상적으로 실행 중입니다.");
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 // Vercel 배포를 위한 설정
