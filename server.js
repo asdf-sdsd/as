@@ -1,33 +1,35 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-const authRoutes = require('./routes/auth');
-const userRoutes = require('./routes/user'); // 🔥 추가
-
-dotenv.config();
+const authRoutes = require("./routes/auth");
+const stockRoutes = require("./routes/stocks");
+const userRoutes = require("./routes/user");
 
 const app = express();
-app.use(cors());
-app.use(express.json()); // 요청 본문을 JSON으로 파싱
 
-// 라우트 설정
-app.use('/auth', authRoutes); // 로그인 및 회원가입 관련 라우트
-app.use('/api/user', userRoutes); // 사용자 관련 라우트
+// 미들웨어 설정
+app.use(cors());
+app.use(express.json()); // JSON 요청 처리
 
 // MongoDB 연결
-mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-}).then(() => {
-    console.log('✅ MongoDB 연결됨');
-}).catch(err => {
-    console.error('❌ MongoDB 연결 실패', err);
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+  .then(() => console.log("MongoDB 연결 성공 ✅"))
+  .catch((err) => console.error("MongoDB 연결 실패 ❌", err));
+
+// API 라우트 설정
+app.use("/api/auth", authRoutes);
+app.use("/api/stocks", stockRoutes);
+app.use("/api/user", userRoutes);
+
+// 기본 루트 응답
+app.get("/", (req, res) => {
+  res.send("Express 서버가 정상적으로 실행 중입니다.");
 });
 
-// 서버 실행
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
-});
+// Vercel 배포를 위한 설정
+module.exports = app;
