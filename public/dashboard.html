@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대시보드</title>
+</head>
+
+<body>
+    <h1>대시보드</h1>
+    <p id="username"></p>
+    <h2>보유 주식</h2>
+    <ul id="stocks-list"></ul>
+
+    <script>
+        window.onload = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('로그인 후 이용해주세요');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/user/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+
+                const data = await response.json();
+
+                if (data.username) {
+                    document.getElementById('username').textContent = `안녕하세요, ${data.username}`;
+                    const stocksList = document.getElementById('stocks-list');
+                    data.stocks.forEach(stock => {
+                        const li = document.createElement('li');
+                        li.textContent = `${stock.name}: ${stock.quantity}`;
+                        stocksList.appendChild(li);
+                    });
+                } else {
+                    alert('사용자 데이터를 불러오는 데 실패했습니다');
+                }
+            } catch (error) {
+                console.error('사용자 데이터 불러오기 중 오류 발생:', error);
+            }
+        };
+    </script>
+</body>
+
+</html>
